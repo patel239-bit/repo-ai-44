@@ -6,12 +6,28 @@ import {
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
+  DropdownMenuSeparator,
+  DropdownMenuLabel,
 } from '@/components/ui/dropdown-menu';
-import { Moon, Sun, Monitor } from 'lucide-react';
+import { Moon, Sun, Monitor, Palette } from 'lucide-react';
 import { useTheme } from '@/hooks/useTheme';
 
 export function ThemeToggle() {
   const { theme, setTheme } = useTheme();
+
+  const themeOptions = [
+    { value: 'light', label: 'Light', icon: Sun },
+    { value: 'dark', label: 'Dark', icon: Moon },
+    { value: 'system', label: 'System', icon: Monitor },
+  ];
+
+  const customThemes = [
+    { value: 'midnight', label: 'Midnight', color: 'bg-slate-900' },
+    { value: 'forest', label: 'Forest', color: 'bg-green-900' },
+    { value: 'ocean', label: 'Ocean', color: 'bg-blue-900' },
+    { value: 'sunset', label: 'Sunset', color: 'bg-orange-900' },
+    { value: 'purple', label: 'Purple', color: 'bg-purple-900' },
+  ];
 
   return (
     <DropdownMenu>
@@ -23,27 +39,39 @@ export function ThemeToggle() {
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end" className="bg-background border-border">
-        <DropdownMenuItem 
-          onClick={() => setTheme('light')}
-          className="hover:bg-accent"
-        >
-          <Sun className="mr-2 h-4 w-4" />
-          <span>Light</span>
-        </DropdownMenuItem>
-        <DropdownMenuItem 
-          onClick={() => setTheme('dark')}
-          className="hover:bg-accent"
-        >
-          <Moon className="mr-2 h-4 w-4" />
-          <span>Dark</span>
-        </DropdownMenuItem>
-        <DropdownMenuItem 
-          onClick={() => setTheme('system')}
-          className="hover:bg-accent"
-        >
-          <Monitor className="mr-2 h-4 w-4" />
-          <span>System</span>
-        </DropdownMenuItem>
+        <DropdownMenuLabel className="flex items-center gap-2">
+          <Palette className="h-4 w-4" />
+          <span>Theme</span>
+        </DropdownMenuLabel>
+        
+        {/* Standard themes */}
+        {themeOptions.map((option) => (
+          <DropdownMenuItem 
+            key={option.value}
+            onClick={() => setTheme(option.value as any)}
+            className={`hover:bg-accent ${theme === option.value ? 'bg-accent/50' : ''}`}
+          >
+            <option.icon className="mr-2 h-4 w-4" />
+            <span>{option.label}</span>
+          </DropdownMenuItem>
+        ))}
+        
+        <DropdownMenuSeparator />
+        <DropdownMenuLabel className="text-xs text-muted-foreground">
+          Custom Themes
+        </DropdownMenuLabel>
+        
+        {/* Custom themes */}
+        {customThemes.map((option) => (
+          <DropdownMenuItem 
+            key={option.value}
+            onClick={() => setTheme(option.value as any)}
+            className={`hover:bg-accent ${theme === option.value ? 'bg-accent/50' : ''}`}
+          >
+            <div className={`mr-2 h-4 w-4 rounded-full ${option.color}`} />
+            <span>{option.label}</span>
+          </DropdownMenuItem>
+        ))}
       </DropdownMenuContent>
     </DropdownMenu>
   );
