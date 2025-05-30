@@ -163,7 +163,8 @@ const themes = {
 
 export function ThemeProvider({ children }: { children: React.ReactNode }) {
   const [theme, setTheme] = useState<Theme>(() => {
-    return (localStorage.getItem('theme') as Theme) || 'system';
+    const storedTheme = localStorage.getItem('theme');
+    return (storedTheme as Theme) || 'system';
   });
 
   const [actualTheme, setActualTheme] = useState<'dark' | 'light'>('dark');
@@ -193,7 +194,7 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
 
     // Apply CSS custom properties
     Object.entries(colorScheme).forEach(([key, value]) => {
-      root.style.setProperty(`--${key.replace(/([A-Z])/g, '-$1').toLowerCase()}`, value);
+      root.style.setProperty(`--${key.replace(/([A-Z])/g, '-$1').toLowerCase()}`, value as string);
     });
 
     // Set sidebar colors based on the theme
@@ -209,7 +210,7 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
     };
 
     Object.entries(sidebarColors).forEach(([key, value]) => {
-      root.style.setProperty(`--sidebar-${key.replace(/([A-Z])/g, '-$1').toLowerCase()}`, value);
+      root.style.setProperty(`--sidebar-${key.replace(/([A-Z])/g, '-$1').toLowerCase()}`, value as string);
     });
   };
 
