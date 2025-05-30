@@ -21,7 +21,9 @@ const RepoSetupForm: React.FC<RepoSetupFormProps> = ({ onSubmit, isLoading = fal
   const [githubUrl, setGithubUrl] = useState('');
   const [githubToken, setGithubToken] = useState('');
   const [branchName, setBranchName] = useState('main');
+  const [customBranch, setCustomBranch] = useState('');
   const [showTokenField, setShowTokenField] = useState(false);
+  const [branchInputType, setBranchInputType] = useState<'preset' | 'custom'>('preset');
 
   const validateGitHubUrl = (url: string) => {
     const githubPattern = /^https:\/\/github\.com\/[a-zA-Z0-9_.-]+\/[a-zA-Z0-9_.-]+\/?$/;
@@ -49,10 +51,14 @@ const RepoSetupForm: React.FC<RepoSetupFormProps> = ({ onSubmit, isLoading = fal
       return;
     }
 
+    const finalBranchName = branchInputType === 'custom' 
+      ? customBranch.trim() || 'main'
+      : branchName;
+
     onSubmit({
       githubUrl: githubUrl.trim(),
       githubToken: githubToken.trim() || undefined,
-      branchName: branchName.trim() || 'main',
+      branchName: finalBranchName,
     });
   };
 
@@ -95,26 +101,65 @@ const RepoSetupForm: React.FC<RepoSetupFormProps> = ({ onSubmit, isLoading = fal
             </div>
 
             {/* Branch Selection */}
-            <div className="space-y-2">
-              <Label htmlFor="branchName" className="text-sm font-medium">
-                Branch
-              </Label>
-              <div className="relative">
-                <GitBranch className="absolute left-3 top-3 h-4 w-4 text-muted-foreground z-10" />
-                <Select value={branchName} onValueChange={setBranchName}>
-                  <SelectTrigger className="pl-10">
-                    <SelectValue placeholder="Select branch" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="main">main</SelectItem>
-                    <SelectItem value="master">master</SelectItem>
-                    <SelectItem value="develop">develop</SelectItem>
-                    <SelectItem value="dev">dev</SelectItem>
-                  </SelectContent>
-                </Select>
+            <div className="space-y-3">
+              <Label className="text-sm font-medium">Branch</Label>
+              
+              <div className="space-y-3">
+                <div className="flex items-center space-x-2">
+                  <input
+                    type="radio"
+                    id="preset-branch"
+                    checked={branchInputType === 'preset'}
+                    onChange={() => setBranchInputType('preset')}
+                    className="h-4 w-4 text-primary"
+                  />
+                  <Label htmlFor="preset-branch" className="text-sm">Use common branch</Label>
+                </div>
+                
+                {branchInputType === 'preset' && (
+                  <div className="relative ml-6">
+                    <GitBranch className="absolute left-3 top-3 h-4 w-4 text-muted-foreground z-10" />
+                    <Select value={branchName} onValueChange={setBranchName}>
+                      <SelectTrigger className="pl-10">
+                        <SelectValue placeholder="Select branch" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="main">main</SelectItem>
+                        <SelectItem value="master">master</SelectItem>
+                        <SelectItem value="develop">develop</SelectItem>
+                        <SelectItem value="dev">dev</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                )}
+
+                <div className="flex items-center space-x-2">
+                  <input
+                    type="radio"
+                    id="custom-branch"
+                    checked={branchInputType === 'custom'}
+                    onChange={() => setBranchInputType('custom')}
+                    className="h-4 w-4 text-primary"
+                  />
+                  <Label htmlFor="custom-branch" className="text-sm">Enter custom branch</Label>
+                </div>
+                
+                {branchInputType === 'custom' && (
+                  <div className="relative ml-6">
+                    <GitBranch className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
+                    <Input
+                      type="text"
+                      placeholder="feature/my-branch"
+                      value={customBranch}
+                      onChange={(e) => setCustomBranch(e.target.value)}
+                      className="pl-10"
+                    />
+                  </div>
+                )}
               </div>
+              
               <p className="text-xs text-muted-foreground">
-                Choose the branch to analyze (defaults to main)
+                Choose the branch to analyze (defaults to main if custom branch is empty)
               </p>
             </div>
 

@@ -6,6 +6,7 @@ import ChatSessionList from './ChatSessionList';
 import UserProfile from './UserProfile';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
+import { ThemeToggle } from '@/components/ui/theme-toggle';
 import { Plus, Github } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
@@ -36,18 +37,21 @@ const Sidebar: React.FC<SidebarProps> = ({
     )}>
       {/* Header */}
       <div className="p-6 border-b border-sidebar-border">
-        <div className="flex items-center space-x-3 mb-4">
-          <div className="p-2 bg-primary/10 rounded-lg">
-            <Github className="h-6 w-6 text-primary" />
+        <div className="flex items-center justify-between mb-4">
+          <div className="flex items-center space-x-3">
+            <div className="p-2 bg-primary/10 rounded-lg">
+              <Github className="h-6 w-6 text-primary" />
+            </div>
+            <div>
+              <h1 className="text-lg font-bold text-sidebar-foreground">
+                GitHub Repo Chat
+              </h1>
+              <p className="text-sm text-sidebar-foreground/60">
+                AI-powered repository analysis
+              </p>
+            </div>
           </div>
-          <div>
-            <h1 className="text-lg font-bold text-sidebar-foreground">
-              GitHub Repo Chat
-            </h1>
-            <p className="text-sm text-sidebar-foreground/60">
-              AI-powered repository analysis
-            </p>
-          </div>
+          <ThemeToggle />
         </div>
         
         <Button 

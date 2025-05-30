@@ -4,8 +4,10 @@ import { Message } from '@/types';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Card } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
 import { User, Bot, File, Loader2 } from 'lucide-react';
 import { cn } from '@/lib/utils';
+import FileReferencesDialog from './FileReferencesDialog';
 
 interface MessageListProps {
   messages: Message[];
@@ -95,16 +97,29 @@ const MessageItem: React.FC<MessageItemProps> = ({ message }) => {
                 Referenced files:
               </div>
               <div className="flex flex-wrap gap-1">
-                {message.filesReferences.map((file, index) => (
-                  <Badge 
-                    key={index} 
-                    variant="secondary" 
-                    className="text-xs bg-background/50"
-                  >
-                    <File className="h-3 w-3 mr-1" />
-                    {file.fileName}
-                  </Badge>
+                {message.filesReferences.slice(0, 3).map((file, index) => (
+                  <FileReferencesDialog key={index} message={message}>
+                    <Button 
+                      variant="secondary" 
+                      size="sm"
+                      className="text-xs bg-background/50 hover:bg-background/70 h-6 px-2"
+                    >
+                      <File className="h-3 w-3 mr-1" />
+                      {file.fileName}
+                    </Button>
+                  </FileReferencesDialog>
                 ))}
+                {message.filesReferences.length > 3 && (
+                  <FileReferencesDialog message={message}>
+                    <Button 
+                      variant="secondary" 
+                      size="sm"
+                      className="text-xs bg-background/50 hover:bg-background/70 h-6 px-2"
+                    >
+                      +{message.filesReferences.length - 3} more
+                    </Button>
+                  </FileReferencesDialog>
+                )}
               </div>
             </div>
           )}
